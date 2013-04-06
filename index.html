@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+</head>
+<body>
+
+<div id="fb-root"></div>
+<script type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+<h1>おみくじアプリ１</h1>
+
+<p><button onclick="javascript:show_result()">占ってみる</button></p>
+<p id="result_area"></p>
+<p id="post_button" style="display: none;"><button onclick="javascript:post_result('result_area')">ウォールに投稿する</button></p>
+
+<script type="text/javascript">
+FB.init({
+appId:'XXXXXXXXXXXXXXX', cookie:true,
+status:true, xfbml:true, oauth:true
+});
+
+var x;
+var res_text = ['凶', '末吉', '小吉', '中吉', '大吉'];
+
+function show_result() {
+    x =　Math.floor(Math.random() * 5);
+    var area = document.getElementById('result_area');
+    area.textContent = "占いの結果は： "+res_text[x]+" でした！";
+    var btn = document.getElementById('post_button');
+    btn.style.display =　"block";
+}
+
+function post_result(element_id) {
+    FB.login(function(res) {
+        if (res.session || res.authResponse) {
+            var area = document.getElementById(element_id);
+            FB.api('/me/feed', 'post', {
+                message: area.textContent,
+            }, function(response) {
+              if (!response || response.error) {
+                alert('投稿できませんでした。 ' + response.error.message);
+              } else {
+                alert('投稿しました。 Post ID: ' + response.id);
+              }
+            });
+        }
+    }, { scope: 'publish_stream' })
+}
+
+</script>
+
+</body>
+</html>
